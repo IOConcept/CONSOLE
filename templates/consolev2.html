@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Website</title>
+<style>
+    body {
+        background-color: #1c1c1c;
+        font-family: "Consolas", monospace;
+        color: #3cff3c;
+    }
+
+    h1 {
+        font-size: 28px;
+        border-bottom: 2px solid #3cff3c;
+        padding-bottom: 5px;
+    }
+
+    p {
+        font-size: 18px;
+    }
+
+    button {
+        background-color: #3cff3c;
+        border: 2px solid #1c1c1c;
+        color: #1c1c1c;
+        font-family: "Consolas", monospace;
+        font-size: 16px;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    button:hover {
+        background-color: #1c1c1c;
+        color: #3cff3c;
+    }
+
+    select {
+        background-color: #1c1c1c;
+        color: #3cff3c;
+        font-family: "Consolas", monospace;
+        font-size: 16px;
+        padding: 5px;
+        border: 2px solid #3cff3c;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    select:hover {
+        background-color: #3cff3c;
+        color: #1c1c1c;
+    }
+
+    /* Console terminal styles */
+    .console {
+        background-color: #1c1c1c;
+        border: 2px solid #3cff3c;
+        padding: 10px;
+        width: 85%;
+        height: 200px;
+        overflow: auto;
+        white-space: pre-wrap;
+        font-size: 16px;
+    }
+
+    .console-input {
+     <!DOCTYPE html>
+<html>
+<head>
+<title>My Website</title>
+<style>
+    body {
+        background-color: #1c1c1c;
+        font-family: "Consolas", monospace;
+        color: #3cff3c;
+    }
+
+    h1 {
+        font-size: 28px;
+        border-bottom: 2px solid #3cff3c;
+        padding-bottom: 5px;
+    }
+
+    p {
+        font-size: 18px;
+    }
+
+    button {
+        background-color: #3cff3c;
+        border: 2px solid #1c1c1c;
+        color: #1c1c1c;
+        font-family: "Consolas", monospace;
+        font-size: 16px;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    button:hover {
+        background-color: #1c1c1c;
+        color: #3cff3c;
+    }
+
+    select {
+        background-color: #1c1c1c;
+        color: #3cff3c;
+        font-family: "Consolas", monospace;
+        font-size: 16px;
+        padding: 5px;
+        border: 2px solid #3cff3c;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    select:hover {
+        background-color: #3cff3c;
+        color: #1c1c1c;
+    }
+
+    /* Console terminal styles */
+    .console {
+        background-color: #1c1c1c;
+        border: 2px solid #3cff3c;
+        padding: 10px;
+        width: 85%;
+        height: 200px;
+        overflow: auto;
+        white-space: pre-wrap;
+        font-size: 16px;
+    }
+
+    .console-input {
+        background-color: #1c1c1c;
+        color: #3cff3c;
+        border: none;
+        border-bottom: 2px solid #3cff3c;
+        width: 85%;
+        font-family: "Consolas", monospace;
+        font-size: 16px;
+        padding: 5px;
+        outline: none;
+    }
+
+    .console-input:focus {
+        background-color: #3cff3c;
+        color: #1c1c1c;
+    }
+<</style>
+</head>
+<body>
+<h1>My Website</h1>
+<p>This is a simple website with buttons and dropdowns.</p>
+<button type="button">Click Me</button>
+<select>
+    <option value="1">Option 1</option>
+    <option value="2">Option 2</option>
+    <option value="3">Option 3</option>
+</select>
+
+<!-- Console terminal -->
+<div class="console" id="console">
+    <span>Welcome to the console terminal!</span><br>
+    <span>Type your commands below:</span><br>
+    <span id="console-output"></span>
+</div>
+<input type="text" class="console-input" id="console-input" placeholder="Type here..." onkeydown="handleConsoleInput(event)">
+
+<script>
+    let commands = [];
+
+    // Fetch commands from the server
+    async function fetchCommands() {
+      const response = await fetch('/commands');
+      commands = await response.json();
+    }
+
+    // Process the command
+    async function processCommand(command) {
+  const consoleOutput = document.getElementById("console-output");
+
+  if (command.startsWith("%") && command.endsWith("%")) {
+    const message = command.slice(1, -1).split("%").join(" ");
+    const response = await fetch("/save-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: message }),
+    });
+
+    if (response.ok) {
+      consoleOutput.innerHTML += "<br>Message saved: " + message;
+    } else {
+      consoleOutput.innerHTML += "<br>Error saving message: " + message;
+    }
+  } else {
+    const foundCommand = commands.find(
+      (cmd) => cmd.command.toLowerCase() === command.toLowerCase()
+    );
+
+    if (foundCommand) {
+      consoleOutput.innerHTML += "<br>" + foundCommand.response;
+    } else {
+      consoleOutput.innerHTML += "<br>Unknown command: " + command;
+    }
+  }
+}
+
+
+    // Handle console input
+    function handleConsoleInput(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const consoleInput = document.getElementById('console-input');
+        const consoleOutput = document.getElementById('console-output');
+
+        // Display the typed command
+        const command = consoleInput.value;
+        consoleOutput.innerHTML += '<br>&gt; ' + command;
+
+        // Process the command
+        processCommand(command);
+
+        // Clear the input field and scroll to the bottom
+        consoleInput.value = '';
+        consoleOutput.scrollIntoView(false);
+      }
+    }
+
+    // Fetch commands when the page loads
+    fetchCommands();
+</script>
+</body>
+</html>
